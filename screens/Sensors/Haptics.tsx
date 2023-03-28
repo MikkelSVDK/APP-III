@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { StyleSheet, View, Text, Button } from 'react-native';
-import * as Haptics from 'expo-haptics';
+import * as React from 'react'
+import { StyleSheet, View, Text, Button } from 'react-native'
+import * as Haptics from 'expo-haptics'
 
 export default function HapticsScreen() {
   return (
@@ -61,7 +61,7 @@ export default function HapticsScreen() {
         />
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -78,6 +78,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   text: {
-    
+
   }
-});
+})

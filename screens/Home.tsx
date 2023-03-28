@@ -18,7 +18,7 @@ export default function Home({ navigation }: NativeStackScreenProps<any>) {
       <Button title="Go to Sensors" onPress={() => navigation.navigate('Sensors')} />
       <StatusBar style="auto" />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -29,4 +29,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-});
+})

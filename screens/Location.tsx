@@ -62,7 +62,7 @@ export default function Location() {
         />
       <StatusBar style="auto" />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -77,4 +77,4 @@ const styles = StyleSheet.create({
     marginTop: 25,
     alignItems: 'center'
   }
-});
+})

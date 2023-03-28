@@ -1,7 +1,7 @@
 import {  Button, StyleSheet, View } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
 
 export default function Sensors({ navigation }: NativeStackScreenProps<any>) {
   return (
@@ -24,7 +24,7 @@ export default function Sensors({ navigation }: NativeStackScreenProps<any>) {
       <Button title="Magnetometer" onPress={() => navigation.navigate('Magnetometer')} />
       <StatusBar style="auto" />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -34,4 +34,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+})

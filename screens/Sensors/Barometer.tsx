@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
-import { Barometer } from 'expo-sensors';
+import React, { useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native'
+import { Barometer } from 'expo-sensors'
 
 export default function BarometerScreen() {
-  const [{ pressure, relativeAltitude }, setData] = useState<any>({ pressure: 0, relativeAltitude: 0 });
-  const [subscription, setSubscription] = useState<any>(null);
+  const [{ pressure, relativeAltitude }, setData] = useState<any>({ pressure: 0, relativeAltitude: 0 })
+  const [subscription, setSubscription] = useState<any>(null)
 
   const toggleListener = () => {
-    subscription ? unsubscribe() : subscribe();
-  };
+    subscription ? unsubscribe() : subscribe()
+  }
 
   const subscribe = () => {
-    setSubscription(Barometer.addListener(setData));
-  };
+    setSubscription(Barometer.addListener(setData))
+  }
 
   const unsubscribe = () => {
-    subscription && subscription.remove();
-    setSubscription(null);
-  };
+    subscription && subscription.remove()
+    setSubscription(null)
+  }
 
   return (
     <View style={styles.wrapper}>
@@ -31,7 +31,7 @@ export default function BarometerScreen() {
         <Text>Toggle listener</Text>
       </TouchableOpacity>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -48,4 +48,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 20,
   },
-});
+})

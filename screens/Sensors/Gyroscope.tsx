@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Gyroscope } from 'expo-sensors';
+import React, { useState, useEffect } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Gyroscope } from 'expo-sensors'
 
 export default function GyroscopeScreen() {
   Gyroscope.getPermissionsAsync().then(({ status }) => {
@@ -14,29 +14,29 @@ export default function GyroscopeScreen() {
     x: 0,
     y: 0,
     z: 0,
-  });
-  const [subscription, setSubscription] = useState<any>(null);
+  })
+  const [subscription, setSubscription] = useState<any>(null)
 
-  const _slow = () => Gyroscope.setUpdateInterval(1000);
-  const _fast = () => Gyroscope.setUpdateInterval(250);
+  const _slow = () => Gyroscope.setUpdateInterval(1000)
+  const _fast = () => Gyroscope.setUpdateInterval(250)
 
   const _subscribe = () => {
     setSubscription(
       Gyroscope.addListener(gyroscopeData => {
-        setData(gyroscopeData);
+        setData(gyroscopeData)
       })
-    );
-  };
+    )
+  }
 
   const _unsubscribe = () => {
-    subscription && subscription.remove();
-    setSubscription(null);
-  };
+    subscription && subscription.remove()
+    setSubscription(null)
+  }
 
   useEffect(() => {
-    _subscribe();
-    return () => _unsubscribe();
-  }, []);
+    _subscribe()
+    return () => _unsubscribe()
+  }, [])
 
   return (
     <View style={styles.container}>
@@ -56,7 +56,7 @@ export default function GyroscopeScreen() {
         </TouchableOpacity>
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -85,4 +85,4 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderColor: '#ccc',
   },
-});
+})

@@ -1,35 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
-import { LightSensor } from 'expo-sensors';
+import React, { useState, useEffect } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native'
+import { LightSensor } from 'expo-sensors'
 
 export default function LightSensorScreen() {
-  const [{ illuminance }, setData] = useState({ illuminance: 0 });
-  const [subscription, setSubscription] = useState<any>(null);
+  const [{ illuminance }, setData] = useState({ illuminance: 0 })
+  const [subscription, setSubscription] = useState<any>(null)
 
   useEffect(() => {
-    _toggle();
+    _toggle()
 
     return () => {
-      _unsubscribe();
-    };
-  }, []);
+      _unsubscribe()
+    }
+  }, [])
 
   const _toggle = () => {
     if (subscription) {
-      _unsubscribe();
+      _unsubscribe()
     } else {
-      _subscribe();
+      _subscribe()
     }
-  };
+  }
 
   const _subscribe = () => {
-    setSubscription(LightSensor.addListener(setData));
-  };
+    setSubscription(LightSensor.addListener(setData))
+  }
 
   const _unsubscribe = () => {
-    subscription && subscription.remove();
-    setSubscription(null);
-  };
+    subscription && subscription.remove()
+    setSubscription(null)
+  }
 
   return (
     <View style={styles.sensor}>
@@ -43,7 +43,7 @@ export default function LightSensorScreen() {
         </TouchableOpacity>
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -63,4 +63,4 @@ const styles = StyleSheet.create({
     marginTop: 45,
     paddingHorizontal: 10,
   },
-});
+})
