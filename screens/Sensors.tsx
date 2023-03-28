@@ -6,19 +6,19 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack'
 export default function Sensors({ navigation }: NativeStackScreenProps<any>) {
   return (
     <View style={styles.container}>
-      <View style={{marginBottom: 10}}>
+      <View style={styles.btnView}>
         <Button title="Accelerometer" onPress={() => navigation.navigate('Accelerometer')} />
       </View>
-      <View style={{marginBottom: 10}}>
+      <View style={styles.btnView}>
         <Button title="Barometer" onPress={() => navigation.navigate('Barometer')} />
       </View>
-      <View style={{marginBottom: 10}}>
+      <View style={styles.btnView}>
         <Button title="Gyroscope" onPress={() => navigation.navigate('Gyroscope')} />
       </View>
-      <View style={{marginBottom: 10}}>
+      <View style={styles.btnView}>
         <Button title="LightSensor" onPress={() => navigation.navigate('LightSensor')} />
       </View>
-      <View style={{marginBottom: 10}}>
+      <View style={styles.btnView}>
         <Button title="Haptics" onPress={() => navigation.navigate('Haptics')} />
       </View>
       <Button title="Magnetometer" onPress={() => navigation.navigate('Magnetometer')} />
@@ -34,4 +34,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  btnView: {
+    marginBottom: 10
+  }
 })

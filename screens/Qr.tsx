@@ -1,17 +1,24 @@
 import { useEffect, useState } from 'react'
-import { Alert, StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, View } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 
 import { BarCodeScanner } from 'expo-barcode-scanner'
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-export default function Qr() {
+export default function Qr({ navigation }: NativeStackScreenProps<any>) {
   const [scanned, setScanned] = useState(false)
 
   useEffect(() => {
     BarCodeScanner.requestPermissionsAsync().then(({ status }) => {
       if (status !== 'granted') {
-        console.log("BarCodeScanner.requestPermissionsAsync")
-        return
+        return Alert.alert(
+          'QR scanner',
+          `Permission denied... `,
+          [
+            { text: 'Go back', onPress: () => navigation.navigate("Home") },
+          ],
+          { cancelable: false }
+        )
       }
     })
   }, [])

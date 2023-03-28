@@ -10,20 +10,16 @@ export default function CameraScreen() {
   
   const camera = useRef<any>(null)
 
-  if (!permission) {
-    // Camera permissions are still loading
+  if (!permission) 
     return <View />
-  }
 
-  if (!permission.granted) {
-    // Camera permissions are not granted yet
+  if (!permission.granted)
     return (
       <View style={styles.container}>
         <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
         <Button onPress={requestPermission} title="grant permission" />
       </View>
     )
-  }
 
   function toggleCameraType() {
     setType(current => (current === CameraType.back ? CameraType.front : CameraType.back))

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, Text, View } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 
 import { requestForegroundPermissionsAsync, getCurrentPositionAsync, LocationObject } from 'expo-location'
@@ -7,8 +7,9 @@ import MapView, { Marker } from 'react-native-maps'
 import Spinner from 'react-native-loading-spinner-overlay'
 
 import axios from 'axios'
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-export default function Location() {
+export default function Location({ navigation }: NativeStackScreenProps<any>) {
   const [ mapViewRef, setMapViewRef ] = useState<MapView | null>(null)
   
   const [ loading, setLoading ] = useState<boolean>(true)
@@ -18,12 +19,17 @@ export default function Location() {
   useEffect(() => {
     requestForegroundPermissionsAsync().then(({ status }) => {
       if (status !== 'granted') {
-        console.log("requestForegroundPermissionsAsync")
         setLoading(false)
-        return
+        return Alert.alert(
+          'Location',
+          `Permission denied... `,
+          [
+            { text: 'Go back', onPress: () => navigation.navigate("Home") },
+          ],
+          { cancelable: false }
+        )
       }
 
-      console.log("getCurrentPositionAsync")
       getCurrentPositionAsync({}).then(location => {
         axios.get(`https://api.openrouteservice.org/geocode/reverse?api_key=5b3ce3597851110001cf62480badd745b7524db9bd7bfa472578d43d&point.lon=${location.coords.longitude}&point.lat=${location.coords.latitude}`).then(res => {
           setLocation(location)
