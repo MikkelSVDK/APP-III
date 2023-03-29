@@ -19,6 +19,7 @@ import LightSensorScreen from './screens/Sensors/LightSensor'
 import MagnetometerScreen from './screens/Sensors/Magnetometer'
 import HapticsScreen from './screens/Sensors/Haptics'
 import CameraScreen from './screens/Camera'
+import Geocache from './screens/Geocache'
 
 preventAutoHideAsync()
 
@@ -32,6 +33,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" component={Home} />
+        {/*<Stack.Screen name="Geocache" component={Geocache} />*/}
         <Stack.Screen name="Qr" component={Qr} />
         <Stack.Screen name="Location" component={Location} />
         <Stack.Screen name="Camera" component={CameraScreen} />

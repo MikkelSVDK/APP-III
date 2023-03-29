@@ -6,6 +6,9 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack'
 export default function Home({ navigation }: NativeStackScreenProps<any>) {
   return (
     <View style={styles.container}>
+      {/*<View style={{marginBottom: 10}}>
+        <Button title="Go to Geocache" onPress={() => navigation.navigate('Geocache')} />
+      </View>*/}
       <View style={{marginBottom: 10}}>
         <Button title="Go to Camera" onPress={() => navigation.navigate('Camera')} />
       </View>
