@@ -4,17 +4,19 @@ import { StatusBar } from 'expo-status-bar'
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-import { requestForegroundPermissionsAsync, watchPositionAsync, LocationSubscription, getLastKnownPositionAsync } from 'expo-location'
+import { requestForegroundPermissionsAsync, watchPositionAsync, LocationSubscription, getLastKnownPositionAsync, getForegroundPermissionsAsync } from 'expo-location'
 import MapView, { Circle } from 'react-native-maps'
-import { useFocusEffect } from '@react-navigation/native'
 
 export default function Geocache({ navigation }: NativeStackScreenProps<any>) {
-  let watchPosition: LocationSubscription | undefined
   const [ arrived, setArrived ] = useState<boolean>(false)
+  let localArrived: boolean = false
+
   const [ mapViewRef, setMapViewRef ] = useState<MapView | null>(null)
   
   const [ location, setLocation ] = useState<{ latitude: number, longitude: number } | undefined>()
   const [ randomLocation, setRandomLocation ] = useState<{ latitude: number, longitude: number } | undefined>()
+
+  let localRandomLocation: { latitude: number, longitude: number } | undefined
 
   function getRandomLocation(latitude: number, longitude: number, radius: number) {
     // Convert radius from meters to degrees
@@ -53,7 +55,69 @@ export default function Geocache({ navigation }: NativeStackScreenProps<any>) {
     return distanceInMeters;
   }
 
-  useFocusEffect(
+  useEffect(() => {
+
+    const focusHandler = navigation.addListener('focus', () => {
+      setArrived(false)
+      localArrived = false
+
+      getLastKnownPositionAsync().then(location => {
+        let [latitude, longitude] = getRandomLocation(location!.coords.latitude, location!.coords.longitude, 100)
+
+        localRandomLocation = {
+          latitude,
+          longitude
+        }
+
+        setRandomLocation(localRandomLocation)
+      })
+    })
+
+    let locationWatchPosition: LocationSubscription | undefined
+    getForegroundPermissionsAsync().then(async ({ granted }) => {
+      if(!granted){
+        let { granted } = await requestForegroundPermissionsAsync()
+        if(!granted)
+          return Alert.alert(
+            'Location',
+            `Permission denied... `,
+            [
+              { text: 'Go back', onPress: () => navigation.navigate("Home") },
+            ],
+            { cancelable: false }
+          )
+      }
+      
+      locationWatchPosition = await watchPositionAsync({
+        distanceInterval: 1
+      }, (location) => {
+        setLocation({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        })
+
+        if(localRandomLocation){
+          let meters = getDistanceInMeters(location.coords.latitude, location.coords.longitude, localRandomLocation.latitude, localRandomLocation.longitude)
+          console.log(meters)
+          if(meters < 10 && !localArrived){
+            setArrived(true)
+            localArrived = true
+            navigation.navigate('Qr')
+          }
+        }
+      })
+    })
+
+    return () => {
+      focusHandler()
+
+      if(locationWatchPosition)
+        locationWatchPosition.remove()
+    }
+  }, [])
+
+
+  /*useFocusEffect(
     useCallback(() => {
       setArrived(false)
 
@@ -120,7 +184,7 @@ export default function Geocache({ navigation }: NativeStackScreenProps<any>) {
       if(watchPosition)
         watchPosition.remove()
     }
-  }, [randomLocation])
+  }, [randomLocation])*/
 
   return (
     <View style={styles.container}>

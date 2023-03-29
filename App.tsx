@@ -33,7 +33,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" component={Home} />
-        {/*<Stack.Screen name="Geocache" component={Geocache} />*/}
+        <Stack.Screen name="Geocache" component={Geocache} />
         <Stack.Screen name="Qr" component={Qr} />
         <Stack.Screen name="Location" component={Location} />
         <Stack.Screen name="Camera" component={CameraScreen} />

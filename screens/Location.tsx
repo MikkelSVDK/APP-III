@@ -59,16 +59,6 @@ export default function Location({ navigation }: NativeStackScreenProps<any>) {
     <View style={styles.container}>
       <MapView style={styles.map} ref={ref => setMapViewRef(ref)} showsUserLocation={true} mapType="hybrid" showsTraffic={true}>
         {feature && <Marker title={feature?.properties?.label} coordinate={{latitude: feature?.geometry?.coordinates[1] || 0, longitude: feature?.geometry?.coordinates[0] || 0}} />}
-        <Circle
-        center={{
-          latitude: feature?.geometry?.coordinates[1] || 0,
-          longitude: feature?.geometry?.coordinates[0] || 0,
-        }}
-        radius={20}
-        strokeWidth={2}
-        strokeColor="#3399ff"
-        fillColor="#80bfff"
-      />
       </MapView>
       <Spinner
           visible={loading}
