@@ -3,6 +3,7 @@ import { Camera, CameraType } from 'expo-camera'
 import { useRef, useState } from 'react'
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import * as WebBrowser from 'expo-web-browser'
+import { selectionAsync } from 'expo-haptics'
 
 export default function CameraScreen() {
   const [type, setType] = useState(CameraType.back)
@@ -22,12 +23,14 @@ export default function CameraScreen() {
     )
 
   function toggleCameraType() {
+    selectionAsync()
     setType(current => (current === CameraType.back ? CameraType.front : CameraType.back))
   }
 
   function takePicture() {
-    camera.current?.takePictureAsync({ quality: 0.5, base64: true }).then((data: any) => {
-      axios.post(`http://10.130.64.119:8080/upload/image`, { base64image: `data:image/jpgbase64,${data.base64}` }).then(res => {
+    camera.current?.takePictureAsync({ quality: 0, base64: true }).then((data: any) => {
+      selectionAsync()
+      axios.post(`http://10.130.64.119:8080/upload/image`, { base64image: `data:image/png;base64, ${data.base64}` }).then(res => {
         WebBrowser.openBrowserAsync(`http://10.130.64.119:8080${res.data}`)
       }).catch(err => {
         console.log(err)

@@ -5,10 +5,12 @@ import { StatusBar } from 'expo-status-bar'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 
 import { requestForegroundPermissionsAsync, watchPositionAsync, LocationSubscription, getLastKnownPositionAsync, getForegroundPermissionsAsync } from 'expo-location'
-import MapView, { Circle } from 'react-native-maps'
+import MapView, { Circle, UserLocationChangeEvent } from 'react-native-maps'
 
-export default function Geocache({ navigation }: NativeStackScreenProps<any>) {
+export default function Geocache({ route, navigation }: NativeStackScreenProps<any>) {
   const [ arrived, setArrived ] = useState<boolean>(false)
+  const [ meters, setMeters ] = useState<number>(0)
+  let currentLvl = 0
   let localArrived: boolean = false
 
   const [ mapViewRef, setMapViewRef ] = useState<MapView | null>(null)
@@ -55,14 +57,31 @@ export default function Geocache({ navigation }: NativeStackScreenProps<any>) {
     return distanceInMeters;
   }
 
-  useEffect(() => {
+  function mapViewUserLocationChange(e: UserLocationChangeEvent) {
+    if(!mapViewRef) return
 
+    mapViewRef.animateCamera({
+      center: {
+        latitude: e.nativeEvent.coordinate!.latitude,
+        longitude: e.nativeEvent.coordinate!.longitude
+      },
+      heading: e.nativeEvent.coordinate!.heading > 0 ? e.nativeEvent.coordinate?.heading : 0,
+      pitch: 0,
+      zoom: 0,
+      altitude: 200
+    }, { duration: 500 })
+  }
+
+
+  useEffect(() => {
     const focusHandler = navigation.addListener('focus', () => {
+      currentLvl++
+      
       setArrived(false)
       localArrived = false
 
       getLastKnownPositionAsync().then(location => {
-        let [latitude, longitude] = getRandomLocation(location!.coords.latitude, location!.coords.longitude, 100)
+        let [latitude, longitude] = getRandomLocation(location!.coords.latitude, location!.coords.longitude, 7)
 
         localRandomLocation = {
           latitude,
@@ -88,6 +107,7 @@ export default function Geocache({ navigation }: NativeStackScreenProps<any>) {
           )
       }
       
+      console.log("watchPositionAsync")
       locationWatchPosition = await watchPositionAsync({
         distanceInterval: 1
       }, (location) => {
@@ -97,12 +117,13 @@ export default function Geocache({ navigation }: NativeStackScreenProps<any>) {
         })
 
         if(localRandomLocation){
-          let meters = getDistanceInMeters(location.coords.latitude, location.coords.longitude, localRandomLocation.latitude, localRandomLocation.longitude)
-          console.log(meters)
-          if(meters < 10 && !localArrived){
+          let localMeters = getDistanceInMeters(location.coords.latitude, location.coords.longitude, localRandomLocation.latitude, localRandomLocation.longitude)
+          console.log(localMeters)
+          setMeters(localMeters)
+          if(localMeters < 2 && !localArrived){
             setArrived(true)
             localArrived = true
-            navigation.navigate('Qr')
+            navigation.navigate('Qr', { showHeader: false, currentLvl })
           }
         }
       })
@@ -116,79 +137,21 @@ export default function Geocache({ navigation }: NativeStackScreenProps<any>) {
     }
   }, [])
 
-
-  /*useFocusEffect(
-    useCallback(() => {
-      setArrived(false)
-
-      if(watchPosition)
-        watchPosition.remove()
-      
-      requestForegroundPermissionsAsync().then(async ({ status }) => {
-        if (status !== 'granted') {
-          return Alert.alert(
-            'Location',
-            `Permission denied... `,
-            [
-              { text: 'Go back', onPress: () => navigation.navigate("Home") },
-            ],
-            { cancelable: false }
-          )
-        }
-
-        getLastKnownPositionAsync().then(location => {
-          let [latitude, longitude] = getRandomLocation(location!.coords.latitude, location!.coords.longitude, 50)
-
-          setRandomLocation({
-            latitude,
-            longitude
-          })
-        })
-      })
-
-      return () => {
-        if(watchPosition)
-          watchPosition.remove()
-      }
-    }, [])
-  )
-
-  useEffect(() => {
-    if(watchPosition)
-      watchPosition.remove()
-
-    requestForegroundPermissionsAsync().then(async ({ status }) => {
-      if(status === 'granted'){
-        watchPosition = await watchPositionAsync({
-          distanceInterval: 1
-        }, location => {
-          setLocation({
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-          })
-
-          console.log(arrived, randomLocation)
-          if(randomLocation){
-            let meters = getDistanceInMeters(location.coords.latitude, location.coords.longitude, randomLocation.latitude, randomLocation.longitude)
-            console.log(meters)
-            if(meters < 50 && !arrived){
-              setArrived(true)
-              navigation.navigate('Qr')
-            }
-          }
-        })
-      }
-    })
-
-    return () => {
-      if(watchPosition)
-        watchPosition.remove()
-    }
-  }, [randomLocation])*/
-
   return (
     <View style={styles.container}>
-      <MapView style={styles.map} ref={ref => setMapViewRef(ref)} showsUserLocation={true} followsUserLocation={true}>
+      <Text style={{ position:'absolute', zIndex: 1, top: 10, left: 10, fontSize: 25 }}>{meters == 0 ? '-' : meters.toFixed(2)} m</Text>
+      <MapView 
+        style={styles.map} 
+        ref={ref => setMapViewRef(ref)} 
+        onUserLocationChange={mapViewUserLocationChange} 
+        showsUserLocation={true}
+        initialRegion={{
+          latitude: 0,
+          longitude: 0,
+          latitudeDelta: 0,
+          longitudeDelta: 0
+        }}
+      >
         {randomLocation && <Circle
           center={randomLocation}
           radius={5}
